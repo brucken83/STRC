@@ -1,0 +1,2 @@
+run_time_utc,market_date,signal,score,btc_close,btc_ret_1d,btc_vol_ratio,strc_close,strc_discount_abs,strc_discount_pct,div_window,days_from_dividend
+2026-03-18 00:00:00 UTC,2026-03-18,OBSERVAR,58,71184.1641,-0.037043,1.0153,99.57,0.43,0.004319,depois_1a3,2

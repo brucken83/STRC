@@ -1,30 +1,27 @@
-# STRC BTC Scanner v3
+# STRC BTC Scanner v4
 
-Projeto para rodar diariamente no GitHub Actions, enviar alerta ao Telegram e publicar um dashboard executivo no GitHub Pages.
+Projeto com scanner diário STRC/BTC, envio ao Telegram, histórico em CSV/JSON e dashboard executivo estático para GitHub Pages.
 
-## O que faz
-- baixa BTC e STRC via Yahoo Finance
-- calcula sinal diário: NO TRADE / OBSERVAR / COMPRA BOA / COMPRA EXCEPCIONAL
-- salva histórico em `data/history.csv`
-- gera `docs/index.html` com dashboard executivo
-- envia a mensagem ao Telegram
+## Recursos
+- Classificação: NO TRADE, OBSERVAR, COMPRA BOA, COMPRA EXCEPCIONAL
+- Histórico salvo em `data/history.csv` e `docs/data/latest.json`
+- Dashboard executivo em `docs/index.html`
+- Atualização automática via GitHub Actions
+- Envio para Telegram via Bot API
 
-## Secrets necessários
-Em `Settings > Secrets and variables > Actions` crie:
+## Secrets no GitHub
+Crie em `Settings > Secrets and variables > Actions`:
 - `TELEGRAM_BOT_TOKEN`
 - `TELEGRAM_CHAT_ID`
 
-## Como publicar o site
+## Publicar dashboard
 1. Suba a pasta inteira para um repositório no GitHub.
 2. Vá em `Settings > Pages`.
-3. Em `Source`, escolha `Deploy from a branch`.
-4. Selecione `main` e a pasta `/docs`.
+3. Selecione `Deploy from a branch`.
+4. Escolha a branch `main` e a pasta `/docs`.
 
 ## Rodar manualmente
-- Abra `Actions`
-- Selecione `Daily STRC BTC Scanner`
-- Clique em `Run workflow`
+- Actions > `Daily STRC BTC Scanner v4` > `Run workflow`
 
-## Ajustes úteis
-- Atualize as datas em `DIVIDEND_DATES`
-- Altere os thresholds no workflow ou via variables/secrets
+## Ajustes
+No workflow, ajuste as datas de dividendos em `DIVIDEND_DATES` quando necessário.

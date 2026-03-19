@@ -1,93 +1,112 @@
 <!doctype html>
-<html lang='pt-BR'>
+<html lang="pt-br">
 <head>
-  <meta charset='utf-8'>
-  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>STRC BTC Scanner Dashboard</title>
-  <script src='https://cdn.jsdelivr.net/npm/chart.js'></script>
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; background:#0b1220; color:#e5e7eb; }
-    .wrap { max-width: 1200px; margin: 0 auto; padding: 24px; }
-    h1 { margin: 0 0 8px; }
-    .sub { color:#9ca3af; margin-bottom: 24px; }
-    .grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:16px; }
-    .card { background:#111827; border:1px solid #1f2937; border-radius:16px; padding:18px; box-shadow:0 6px 24px rgba(0,0,0,.25); }
-    .kpi { font-size:30px; font-weight:700; margin-top:8px; }
-    .good { color:#34d399; } .warn { color:#fbbf24; } .bad { color:#f87171; } .muted{color:#9ca3af;}
-    table { width:100%; border-collapse: collapse; font-size:14px; }
-    th, td { border-bottom:1px solid #1f2937; padding:10px; text-align:left; }
-    canvas { background:#111827; border:1px solid #1f2937; border-radius:16px; padding:12px; }
-    .section { margin-top:24px; }
+    :root{--bg:#0b1020;--panel:#121933;--panel2:#0f1530;--text:#ebefff;--muted:#9aa7d1;--accent:#7c9cff;--good:#22c55e;--warn:#f59e0b;--bad:#94a3b8;--x:#ef4444;--shadow:0 12px 40px rgba(0,0,0,.28)}
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,Arial,sans-serif;background:linear-gradient(180deg,#09101f 0%,#0d1326 100%);color:var(--text)}
+    .wrap{max-width:1280px;margin:0 auto;padding:24px}
+    .hero{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap;margin-bottom:18px}
+    .title h1{margin:0;font-size:30px}.title p{margin:8px 0 0;color:var(--muted)}
+    .pill{padding:10px 14px;border-radius:999px;background:rgba(124,156,255,.14);border:1px solid rgba(124,156,255,.25);color:#dce5ff;font-weight:600}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+    .card{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid rgba(255,255,255,.06);border-radius:20px;box-shadow:var(--shadow);padding:18px}
+    .kpi{grid-column:span 3}.wide{grid-column:span 6}.full{grid-column:1/-1}
+    .label{color:var(--muted);font-size:13px;margin-bottom:8px}.value{font-size:32px;font-weight:800}.sub{margin-top:6px;color:var(--muted);font-size:13px}
+    .signal{display:inline-flex;align-items:center;gap:8px;font-size:24px;font-weight:800}.dot{width:14px;height:14px;border-radius:999px;background:#94a3b8}
+    .NO\ TRADE .dot{background:var(--bad)} .OBSERVAR .dot{background:var(--warn)} .COMPRA\ BOA .dot{background:var(--good)} .COMPRA\ EXCEPCIONAL .dot{background:var(--x)}
+    .meter{height:12px;background:#1a2242;border-radius:999px;overflow:hidden;margin-top:12px}.fill{height:100%;background:linear-gradient(90deg,#647cff,#22c55e)}
+    canvas{width:100%;height:320px;background:#0c132b;border-radius:14px}
+    table{width:100%;border-collapse:collapse;font-size:14px} th,td{padding:10px 8px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left} th{color:var(--muted);font-weight:600}
+    .footer{color:var(--muted);margin-top:14px;font-size:13px}
+    @media (max-width:960px){.kpi,.wide{grid-column:1/-1}}
   </style>
 </head>
 <body>
-<div class='wrap'>
-  <h1>Dashboard Executivo STRC/BTC</h1>
-  <div class='sub'>Histórico operacional do scanner diário com atualização automática via GitHub Actions.</div>
-
-  <div class='grid'>
-    <div class='card'><div class='muted'>Sinal atual</div><div class='kpi'>N/A</div></div>
-    <div class='card'><div class='muted'>Score atual</div><div class='kpi'>N/A</div></div>
-    <div class='card'><div class='muted'>BTC 1d</div><div class='kpi'>N/A</div></div>
-    <div class='card'><div class='muted'>BTC vol / 20d</div><div class='kpi'>N/A</div></div>
-    <div class='card'><div class='muted'>Preço STRC</div><div class='kpi'>$N/A</div></div>
-    <div class='card'><div class='muted'>Desconto STRC</div><div class='kpi'>$N/A</div></div>
-  </div>
-
-  <div class='section grid'>
-    <div class='card'><canvas id='scoreChart'></canvas></div>
-    <div class='card'><canvas id='priceChart'></canvas></div>
-  </div>
-  <div class='section grid'>
-    <div class='card'><canvas id='signalChart'></canvas></div>
-    <div class='card'>
-      <div class='muted'>Resumo executivo</div>
-      <p><b>Última data de mercado:</b> N/A</p>
-      <p><b>Janela do dividendo:</b> N/A (N/A dias)</p>
-      <p><b>Racional:</b> N/A</p>
-      <p><b>Regra central:</b> o scanner favorece dias em que o BTC cai com volume acima da média e o STRC negocia com desconto relevante, evitando os 5 pregões anteriores ao dividendo.</p>
+<div class="wrap">
+  <div class="hero">
+    <div class="title">
+      <h1>STRC BTC Scanner</h1>
+      <p>Dashboard executivo com histórico diário do setup STRC/BTC.</p>
     </div>
+    <div class="pill" id="updated">Carregando…</div>
   </div>
 
-  <div class='section card'>
-    <div class='muted'>Últimos registros</div>
-    <table>
-      <thead><tr><th>Data</th><th>Sinal</th><th>Score</th><th>BTC 1d</th><th>BTC Vol Ratio</th><th>STRC</th><th>Desconto</th><th>Janela</th></tr></thead>
-      <tbody id='historyTable'></tbody>
-    </table>
+  <div class="grid">
+    <div class="card wide">
+      <div class="label">Sinal atual</div>
+      <div class="signal" id="signalBox"><span class="dot"></span><span id="signalText">—</span></div>
+      <div class="sub" id="signalSub">Aguardando dados</div>
+      <div class="meter"><div class="fill" id="scoreFill" style="width:0%"></div></div>
+      <div class="sub" id="scoreText">Score: —</div>
+    </div>
+    <div class="card kpi"><div class="label">Preço STRC</div><div class="value" id="strcPrice">—</div><div class="sub" id="strcDiscount">—</div></div>
+    <div class="card kpi"><div class="label">BTC 1d</div><div class="value" id="btcRet">—</div><div class="sub" id="btcVol">—</div></div>
+    <div class="card kpi"><div class="label">Janela do dividendo</div><div class="value" id="divWindow">—</div><div class="sub" id="divDays">—</div></div>
+
+    <div class="card wide">
+      <div class="label">Score histórico</div>
+      <canvas id="scoreChart" width="700" height="320"></canvas>
+    </div>
+    <div class="card wide">
+      <div class="label">STRC desconto vs BTC retorno 1d</div>
+      <canvas id="comboChart" width="700" height="320"></canvas>
+    </div>
+
+    <div class="card full">
+      <div class="label">Histórico recente</div>
+      <table>
+        <thead>
+          <tr><th>Data mercado</th><th>Sinal</th><th>Score</th><th>BTC 1d</th><th>Vol ratio</th><th>STRC</th><th>Desconto</th><th>Janela dividendo</th></tr>
+        </thead>
+        <tbody id="historyTable"></tbody>
+      </table>
+      <div class="footer">Atualizado automaticamente via GitHub Actions.</div>
+    </div>
   </div>
 </div>
 <script>
-const rows = [];
-const signalCounts = {};
-
-const labels = rows.map(r => r.market_date);
-const scores = rows.map(r => Number(r.score));
-const strc = rows.map(r => Number(r.strc_price));
-const discount = rows.map(r => Number(r.strc_discount_abs));
-
-new Chart(document.getElementById('scoreChart'), {
-  type:'line',
-  data:{labels, datasets:[{label:'Score', data:scores}, {label:'Desconto STRC', data:discount}]},
-  options:{plugins:{legend:{labels:{color:'#e5e7eb'}}}, scales:{x:{ticks:{color:'#9ca3af'}}, y:{ticks:{color:'#9ca3af'}}}}
-});
-new Chart(document.getElementById('priceChart'), {
-  type:'line',
-  data:{labels, datasets:[{label:'Preço STRC', data:strc}]},
-  options:{plugins:{legend:{labels:{color:'#e5e7eb'}}}, scales:{x:{ticks:{color:'#9ca3af'}}, y:{ticks:{color:'#9ca3af'}}}}
-});
-new Chart(document.getElementById('signalChart'), {
-  type:'bar',
-  data:{labels:Object.keys(signalCounts), datasets:[{label:'Qtde', data:Object.values(signalCounts)}]},
-  options:{plugins:{legend:{labels:{color:'#e5e7eb'}}}, scales:{x:{ticks:{color:'#9ca3af'}}, y:{ticks:{color:'#9ca3af'}}}}
-});
-
-const tbody = document.getElementById('historyTable');
-rows.slice().reverse().slice(0, 20).forEach(r => {
-  const tr = document.createElement('tr');
-  tr.innerHTML = `<td>${r.market_date}</td><td>${r.signal}</td><td>${r.score}</td><td>${(Number(r.btc_ret_1d)*100).toFixed(2)}%</td><td>${Number(r.btc_vol_ratio).toFixed(2)}x</td><td>${Number(r.strc_price).toFixed(2)}</td><td>${Number(r.strc_discount_abs).toFixed(2)}</td><td>${r.div_window}</td>`;
-  tbody.appendChild(tr);
-});
+function fmtPct(v){return (v*100).toFixed(2)+'%'}
+function fmtNum(v,d=2){return Number(v).toFixed(d)}
+function signalClass(sig){return sig.replaceAll(' ','\\ ')}
+function colorForSignal(sig){return {'NO TRADE':'#94a3b8','OBSERVAR':'#f59e0b','COMPRA BOA':'#22c55e','COMPRA EXCEPCIONAL':'#ef4444'}[sig]||'#94a3b8'}
+function drawLineChart(canvas, labels, series, opts={}){
+  const ctx=canvas.getContext('2d'); const w=canvas.width,h=canvas.height; ctx.clearRect(0,0,w,h);
+  ctx.fillStyle='#0c132b'; ctx.fillRect(0,0,w,h);
+  const pad={l:46,r:16,t:20,b:28}; const xs=labels.length>1?(w-pad.l-pad.r)/(labels.length-1):0;
+  let all=[]; series.forEach(s=>all=all.concat(s.data)); const min=Math.min(...all), max=Math.max(...all); const rng=(max-min)||1;
+  ctx.strokeStyle='rgba(255,255,255,.08)'; ctx.lineWidth=1;
+  for(let i=0;i<5;i++){const y=pad.t+i*(h-pad.t-pad.b)/4; ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(w-pad.r,y); ctx.stroke();}
+  series.forEach(s=>{ctx.beginPath(); ctx.lineWidth=2; ctx.strokeStyle=s.color; s.data.forEach((v,i)=>{const x=pad.l+i*xs; const y=h-pad.b-((v-min)/rng)*(h-pad.t-pad.b); if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y)}); ctx.stroke();});
+  ctx.fillStyle='rgba(255,255,255,.65)'; ctx.font='12px Arial'; ctx.fillText(max.toFixed(2), 8, pad.t+10); ctx.fillText(min.toFixed(2), 8, h-pad.b);
+}
+async function main(){
+  const latest=await fetch('./data/latest.json').then(r=>r.json());
+  const history=await fetch('./data/history.json').then(r=>r.json());
+  document.getElementById('updated').textContent='Atualizado: '+latest.run_time_utc;
+  const sigBox=document.getElementById('signalBox'); sigBox.className='signal '+signalClass(latest.signal);
+  document.getElementById('signalText').textContent=latest.signal;
+  document.getElementById('signalSub').textContent='Data de mercado: '+latest.market_date;
+  document.getElementById('scoreFill').style.width=latest.score+'%';
+  document.getElementById('scoreText').textContent='Score: '+latest.score+'/100';
+  document.getElementById('strcPrice').textContent='$'+fmtNum(latest.strc_close);
+  document.getElementById('strcDiscount').textContent='Desconto: $'+fmtNum(latest.strc_discount_abs)+' · '+fmtPct(latest.strc_discount_pct);
+  document.getElementById('btcRet').textContent=fmtPct(latest.btc_ret_1d);
+  document.getElementById('btcVol').textContent='Vol / média 20d: '+fmtNum(latest.btc_vol_ratio)+'x';
+  document.getElementById('divWindow').textContent=latest.div_window;
+  document.getElementById('divDays').textContent='Dias do próximo dividendo: '+latest.days_from_dividend;
+  const rows=history.slice().reverse().slice(0,20).map(r=>`<tr><td>${r.market_date}</td><td><span style="color:${colorForSignal(r.signal)};font-weight:700">${r.signal}</span></td><td>${r.score}</td><td>${fmtPct(r.btc_ret_1d)}</td><td>${fmtNum(r.btc_vol_ratio)}x</td><td>$${fmtNum(r.strc_close)}</td><td>$${fmtNum(r.strc_discount_abs)}</td><td>${r.div_window}</td></tr>`).join('');
+  document.getElementById('historyTable').innerHTML=rows;
+  const labels=history.map(r=>r.market_date.slice(5));
+  drawLineChart(document.getElementById('scoreChart'), labels, [{data:history.map(r=>r.score),color:'#7c9cff'}]);
+  drawLineChart(document.getElementById('comboChart'), labels, [
+    {data:history.map(r=>r.strc_discount_abs),color:'#22c55e'},
+    {data:history.map(r=>r.btc_ret_1d*100),color:'#ef4444'}
+  ]);
+}
+main().catch(err=>{document.getElementById('updated').textContent='Erro ao carregar dados'; console.error(err);});
 </script>
 </body>
 </html>
