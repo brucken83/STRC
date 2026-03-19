@@ -1,0 +1,51 @@
+name: Daily STRC BTC Scanner 5.1
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "10 * * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  run-scanner:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run scanner
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          BTC_TICKER: BTC-USD
+          STRC_TICKER: STRC
+          START_DATE: 2025-07-25
+          STRC_PAR: 100
+          BTC_VOL_LOOKBACK: 20
+          BTC_DROP_OBSERVAR: -0.015
+          BTC_DROP_COMPRA: -0.02
+          BTC_VOL_RATIO_OBSERVAR: 1.0
+          BTC_VOL_RATIO_COMPRA: 1.2
+          STRC_DISC_OBSERVAR: 1.0
+          STRC_DISC_COMPRA: 1.5
+          STRC_DISC_EXCEPCIONAL: 2.0
+          DIVIDEND_DATES: 2025-08-15,2025-09-15,2025-10-15,2025-11-17,2025-12-15,2026-01-15,2026-02-17,2026-03-16
+        run: python scanner.py
+
+      - name: Commit updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data/*
+          git diff --cached --quiet || git commit -m "Update dashboard data"
+          git push
