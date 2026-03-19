@@ -1,0 +1,17 @@
+[
+  {
+    "market_date": "2026-03-18",
+    "updated_at_utc": "2026-03-18 00:00:00 UTC",
+    "signal": "OBSERVAR",
+    "score": 58,
+    "btc_close": 71184.16,
+    "btc_ret_1d": -0.037043,
+    "btc_vol_ratio": 1.0153,
+    "strc_close": 99.57,
+    "strc_discount_abs": 0.43,
+    "strc_discount_pct": 0.004319,
+    "days_from_dividend": 2,
+    "div_window": "1 a 3 dias após dividendo",
+    "rationale": "BTC caiu no dia | Queda do BTC acima do gatilho de compra | Volume do BTC acima da média | Fora do bloqueio pré-dividendo"
+  }
+]
