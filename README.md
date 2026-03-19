@@ -1,30 +1,34 @@
-# STRC BTC Scanner v5
+# STRC BTC Scanner v5.1
 
-Projeto com scanner diário STRC/BTC, envio para Telegram e dashboard executivo em GitHub Pages.
+Versão com correção de carregamento do dashboard no GitHub Pages.
 
-## O que tem nesta versão
+## Correção principal
 
-- scanner diário em Python
-- score de 0 a 100
-- semáforo executivo
-- histórico em CSV e JSON
-- dashboard premium em `docs/index.html`
-- GitHub Actions para atualizar dados e publicar histórico
+Os arquivos do dashboard ficam em:
 
-## Secrets necessários
+- `docs/index.html`
+- `docs/data/latest.json`
+- `docs/data/history.json`
+- `docs/data/history.csv`
 
-No GitHub, crie em `Settings > Secrets and variables > Actions`:
+O front-end usa caminhos relativos:
+
+- `./data/latest.json`
+- `./data/history.json`
+
+Isso evita o erro `Unexpected token '<'` quando o GitHub Pages devolve HTML de 404.
+
+## Publicação
+
+1. Suba tudo no GitHub.
+2. Ative **Settings > Pages**.
+3. Escolha **Deploy from a branch**.
+4. Branch `main`, pasta `/docs`.
+5. Rode o workflow em **Actions**.
+
+## Secrets
+
+Crie em `Settings > Secrets and variables > Actions`:
 
 - `TELEGRAM_BOT_TOKEN`
 - `TELEGRAM_CHAT_ID`
-
-## GitHub Pages
-
-Ative em `Settings > Pages` e selecione:
-
-- Branch: `main`
-- Folder: `/docs`
-
-## Rodar manualmente
-
-Em `Actions`, execute `Daily STRC BTC Scanner V5`.

@@ -1,221 +1,192 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>STRC BTC Scanner Executive Dashboard</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>STRC BTC Scanner v5.1</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    :root {
-      --bg: #061024;
-      --panel: rgba(15, 28, 66, 0.78);
-      --panel-2: rgba(20, 37, 84, 0.9);
-      --text: #f6f8ff;
-      --muted: #a6b7e6;
-      --border: rgba(115, 145, 255, 0.18);
-      --orange: #f5a623;
-      --green: #2ed47a;
-      --red: #ff5a6f;
-      --blue: #52a8ff;
-      --purple: #8a7dff;
-      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Inter, Arial, sans-serif;
-      color: var(--text);
-      background: radial-gradient(circle at top left, #0c2456 0%, #07142e 35%, #040a18 100%);
-    }
-    .wrap { max-width: 1320px; margin: 0 auto; padding: 28px; }
-    .topbar { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom: 24px; }
-    h1 { margin: 0; font-size: 48px; letter-spacing: -.03em; }
-    .subtitle { color: var(--muted); margin-top: 8px; font-size: 18px; }
-    .pill { padding: 14px 18px; background: rgba(28, 46, 104, 0.75); border:1px solid var(--border); border-radius: 999px; font-weight: 700; color:#d8e3ff; }
-    .grid { display:grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 16px; }
-    .card {
-      background: linear-gradient(180deg, rgba(18,32,73,0.95), rgba(10,21,54,0.9));
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      box-shadow: var(--shadow);
-      padding: 18px;
-      min-height: 140px;
-    }
-    .card h3 { margin: 0 0 8px; color: #c7d4ff; font-size: 15px; font-weight: 600; }
-    .value { font-size: 54px; font-weight: 800; letter-spacing: -.04em; }
-    .big-signal { font-size: 22px; font-weight: 800; display:flex; align-items:center; gap:10px; }
-    .muted { color: var(--muted); }
-    .badge { display:inline-flex; align-items:center; gap:8px; font-size: 14px; font-weight:700; padding:10px 14px; border-radius: 999px; }
-    .badge.no { background: rgba(255,255,255,0.08); }
-    .badge.obs { background: rgba(245,166,35,0.16); color:#ffd28a; }
-    .badge.good { background: rgba(46,212,122,0.18); color:#8df0ba; }
-    .badge.ex { background: rgba(138,125,255,0.18); color:#cec9ff; }
-    .meter { height: 14px; width:100%; border-radius:999px; overflow:hidden; background: rgba(255,255,255,0.08); margin-top: 14px; }
-    .meter > div { height:100%; background: linear-gradient(90deg, var(--purple), var(--blue), var(--green)); }
-    .section { display:grid; grid-template-columns: 1.1fr 1.4fr 1.2fr; gap:16px; margin-top: 16px; }
-    .section2 { display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-top:16px; }
-    .section3 { display:grid; grid-template-columns: 1fr; gap:16px; margin-top:16px; }
-    canvas { width: 100% !important; height: 320px !important; }
-    .mini { font-size: 13px; color: var(--muted); }
-    table { width:100%; border-collapse: collapse; }
-    th, td { padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.08); text-align:left; }
-    th { color:#c7d4ff; font-size:13px; }
-    td { font-size: 14px; }
-    .legend { display:flex; gap:10px; flex-wrap:wrap; margin-top:8px; }
-    .legend span { font-size:12px; color: var(--muted); }
-    .kpi-grid { display:grid; grid-template-columns: repeat(2,1fr); gap: 12px; }
-    .kpi { padding: 14px; border-radius: 18px; background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06); }
-    .kpi .num { font-size: 28px; font-weight: 800; }
-    @media (max-width: 1100px) {
-      .grid, .section, .section2 { grid-template-columns: 1fr; }
-      h1 { font-size: 36px; }
-      .topbar { flex-direction: column; }
-    }
+    :root{--bg:#071126;--card:#111c46;--card2:#0c1637;--text:#f3f5ff;--muted:#b3c0ef;--line:#24356d;--warn:#f5a524;--good:#36d47a;--great:#00e0ff;--bad:#ff5b6e}
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,Arial,sans-serif;background:radial-gradient(circle at top,#071a4d 0,#06122c 45%,#030915 100%);color:var(--text)}
+    .wrap{max-width:1260px;margin:0 auto;padding:28px}
+    h1{margin:0 0 6px;font-size:48px} p.sub{margin:0 0 24px;color:var(--muted)}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+    .pill{padding:10px 16px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.03);color:var(--text)}
+    .grid{display:grid;gap:14px}.g3{grid-template-columns:2fr 1fr 1fr}.g2{grid-template-columns:1fr 2fr}.g2b{grid-template-columns:2fr 1fr}
+    .card{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid rgba(108,138,255,.2);border-radius:22px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    .kicker{font-size:14px;color:#bdd0ff;margin-bottom:10px}.big{font-size:28px;font-weight:800}.value{font-size:24px;font-weight:800}.muted{color:var(--muted)}
+    .badge{display:inline-flex;align-items:center;gap:10px;font-size:20px;font-weight:800}.dot{width:14px;height:14px;border-radius:50%}
+    .no{background:#8b95b2}.obs{background:var(--warn)}.boa{background:var(--good)}.exc{background:var(--great)}
+    .progress{margin-top:12px;height:14px;border-radius:999px;background:#1b285d;overflow:hidden}.bar{height:100%;background:linear-gradient(90deg,#5f7cff,#39d98a,#00e0ff);width:0}
+    .small{font-size:13px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}.stat{padding:12px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.02)}
+    .canvas-wrap{position:relative;height:320px}.canvas-wrap.short{height:240px}
+    table{width:100%;border-collapse:collapse} th,td{padding:10px 8px;border-bottom:1px solid #203057;text-align:left;font-size:13px} th{color:#bfd0ff}
+    .error{display:none;margin:18px 0;padding:14px;border-radius:14px;background:#3a1020;border:1px solid #74243a;color:#ffd4dc;white-space:pre-wrap}
+    .footer{margin-top:18px;color:var(--muted);font-size:13px}
+    @media (max-width:960px){.g3,.g2,.g2b{grid-template-columns:1fr}.stats{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="topbar">
-      <div>
-        <h1>STRC BTC Scanner</h1>
-        <div class="subtitle">Dashboard executivo com histórico diário, score, semáforo e contexto operacional do setup STRC/BTC.</div>
-      </div>
-      <div class="pill" id="updatedAt">Atualizado: --</div>
+<div class="wrap">
+  <div class="topbar">
+    <div>
+      <h1>STRC BTC Scanner</h1>
+      <p class="sub">Dashboard executivo com histórico diário, semáforo e contexto operacional do setup STRC/BTC.</p>
     </div>
+    <div class="pill" id="updatedAt">Atualizado: --</div>
+  </div>
 
-    <div class="grid">
-      <div class="card">
-        <h3>Sinal atual</h3>
-        <div id="signalWrap"></div>
-        <div class="mini" id="marketDate">Data de mercado: --</div>
-        <div class="meter"><div id="scoreBar" style="width:0%"></div></div>
-        <div class="mini" id="scoreText">Score: --</div>
-      </div>
-      <div class="card">
-        <h3>Preço STRC</h3>
-        <div class="value" id="strcPrice">--</div>
-        <div class="mini" id="strcDiscount">Desconto: --</div>
-      </div>
-      <div class="card">
-        <h3>BTC 1d</h3>
-        <div class="value" id="btcRet">--</div>
-        <div class="mini" id="btcVol">Vol/média 20d: --</div>
-      </div>
-      <div class="card">
-        <h3>Semáforo executivo</h3>
-        <div class="kpi-grid">
-          <div class="kpi"><div class="mini">Distância para 99,5</div><div class="num" id="dist995">--</div></div>
-          <div class="kpi"><div class="mini">Distância para 100</div><div class="num" id="dist100">--</div></div>
-          <div class="kpi"><div class="mini">Últimos 7 sinais</div><div class="num" id="last7">--</div></div>
-          <div class="kpi"><div class="mini">Média de score 30d</div><div class="num" id="avg30">--</div></div>
-        </div>
-      </div>
+  <div id="errorBox" class="error"></div>
+
+  <div class="grid g3">
+    <div class="card">
+      <div class="kicker">Sinal atual</div>
+      <div id="signalBadge" class="badge"><span class="dot no"></span><span>--</span></div>
+      <div class="muted" id="marketDate" style="margin-top:8px">Data de mercado: --</div>
+      <div class="progress"><div id="scoreBar" class="bar"></div></div>
+      <div class="small" id="scoreLabel" style="margin-top:8px">Score: --</div>
+      <div class="small muted" id="rationale" style="margin-top:10px">--</div>
     </div>
-
-    <div class="section">
-      <div class="card">
-        <h3>Janela do dividendo</h3>
-        <div class="value" style="font-size:36px" id="divWindow">--</div>
-        <div class="mini" id="daysDiv">Dias do próximo dividendo: --</div>
-        <div class="legend"><span id="rationale">--</span></div>
-      </div>
-      <div class="card">
-        <h3>Score histórico</h3>
-        <canvas id="scoreChart"></canvas>
-      </div>
-      <div class="card">
-        <h3>Frequência por sinal</h3>
-        <canvas id="signalChart"></canvas>
-      </div>
+    <div class="card">
+      <div class="kicker">Preço STRC</div>
+      <div class="big" id="strcPrice">--</div>
+      <div class="muted" id="strcDiscount">Desconto: --</div>
     </div>
-
-    <div class="section2">
-      <div class="card">
-        <h3>STRC desconto vs BTC retorno 1d</h3>
-        <canvas id="scatterChart"></canvas>
-      </div>
-      <div class="card">
-        <h3>Últimos 30 dias</h3>
-        <canvas id="dualChart"></canvas>
-      </div>
-    </div>
-
-    <div class="section3">
-      <div class="card">
-        <h3>Histórico recente</h3>
-        <table>
-          <thead><tr><th>Data</th><th>Sinal</th><th>Score</th><th>BTC 1d</th><th>Vol Ratio</th><th>STRC</th><th>Desc.</th><th>Dividendo</th></tr></thead>
-          <tbody id="historyBody"></tbody>
-        </table>
-      </div>
+    <div class="card">
+      <div class="kicker">BTC 1d</div>
+      <div class="big" id="btcRet">--</div>
+      <div class="muted" id="btcVol">Vol / média 20d: --</div>
     </div>
   </div>
 
+  <div class="grid g2" style="margin-top:14px">
+    <div class="card">
+      <div class="kicker">Semáforo executivo</div>
+      <div class="stats">
+        <div class="stat"><div class="small muted">Distância para 99,5</div><div class="value" id="dist995">--</div></div>
+        <div class="stat"><div class="small muted">Distância para 100</div><div class="value" id="dist100">--</div></div>
+        <div class="stat"><div class="small muted">Média score 7d</div><div class="value" id="scoreMa7">--</div></div>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="small muted">Últimos 7 sinais</div><div class="small" id="last7">--</div></div>
+        <div class="stat"><div class="small muted">Janela dividendo</div><div class="value" id="divWindow">--</div></div>
+        <div class="stat"><div class="small muted">Dias do próximo dividendo</div><div class="value" id="divDays">--</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="kicker">Score histórico</div>
+      <div class="canvas-wrap"><canvas id="scoreChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="grid g2b" style="margin-top:14px">
+    <div class="card">
+      <div class="kicker">Frequência por sinal</div>
+      <div class="canvas-wrap short"><canvas id="signalChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="kicker">STRC desconto vs BTC retorno 1d</div>
+      <div class="canvas-wrap short"><canvas id="scatterChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <div class="kicker">Histórico recente</div>
+    <div style="overflow:auto">
+      <table>
+        <thead><tr><th>Data</th><th>Sinal</th><th>Score</th><th>BTC 1d</th><th>Vol Ratio</th><th>STRC</th><th>Desconto</th><th>Janela dividendo</th></tr></thead>
+        <tbody id="historyTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="footer">Versão 5.1: corrigido carregamento com caminhos relativos em <code>./data/latest.json</code> e <code>./data/history.json</code>.</div>
+</div>
+
 <script>
-const badgeClass = s => ({"NO TRADE":"no","OBSERVAR":"obs","COMPRA BOA":"good","COMPRA EXCEPCIONAL":"ex"}[s] || "no");
-const pct = v => `${(Number(v)*100).toFixed(2)}%`;
-const num = (v,d=2)=> Number(v).toFixed(d);
-function avg(arr){return arr.length? arr.reduce((a,b)=>a+b,0)/arr.length : 0}
+const latestUrl = './data/latest.json';
+const historyUrl = './data/history.json';
 
-Promise.all([
-  fetch('../data/latest.json').then(r=>r.json()),
-  fetch('../data/history.json').then(r=>r.json())
-]).then(([latest, history]) => {
-  document.getElementById('updatedAt').textContent = `Atualizado: ${latest.updated_at_utc}`;
-  document.getElementById('marketDate').textContent = `Data de mercado: ${latest.market_date}`;
-  document.getElementById('signalWrap').innerHTML = `<div class="big-signal"><span class="badge ${badgeClass(latest.signal)}">${latest.signal}</span></div>`;
+function fmtPct(v){ return (v*100).toFixed(2) + '%'; }
+function fmtNum(v,n=2){ return Number(v).toFixed(n); }
+function niceWindow(w){ return ({'antes_5a1':'5 a 1 dias antes','dia_0':'dia do dividendo','depois_1a3':'1 a 3 dias depois','depois_1a5':'1 a 5 dias depois','fora_janela':'fora da janela'})[w] || w; }
+function badgeClass(sig){ return sig==='COMPRA EXCEPCIONAL'?'exc':sig==='COMPRA BOA'?'boa':sig==='OBSERVAR'?'obs':'no'; }
+
+async function loadJson(path){
+  const res = await fetch(path, {cache:'no-store'});
+  if(!res.ok) throw new Error(`Falha ao carregar ${path}: ${res.status}`);
+  const text = await res.text();
+  try { return JSON.parse(text); }
+  catch(e){ console.error(text.slice(0,300)); throw new Error(`Conteúdo inválido em ${path}. Veio HTML em vez de JSON.`); }
+}
+
+function render(latest, history){
+  document.getElementById('updatedAt').textContent = 'Atualizado: ' + latest.updated_at_utc;
+  document.getElementById('marketDate').textContent = 'Data de mercado: ' + latest.date;
+  document.getElementById('signalBadge').innerHTML = `<span class="dot ${badgeClass(latest.signal)}"></span><span>${latest.signal}</span>`;
   document.getElementById('scoreBar').style.width = `${latest.score}%`;
-  document.getElementById('scoreText').textContent = `Score: ${latest.score}/100`;
-  document.getElementById('strcPrice').textContent = `$${num(latest.strc_close)}`;
-  document.getElementById('strcDiscount').textContent = `Desconto: $${num(latest.strc_discount_abs)} · ${pct(latest.strc_discount_pct)}`;
-  document.getElementById('btcRet').textContent = pct(latest.btc_ret_1d);
-  document.getElementById('btcVol').textContent = `Vol / média 20d: ${num(latest.btc_vol_ratio)}x`;
-  document.getElementById('divWindow').textContent = latest.div_window;
-  document.getElementById('daysDiv').textContent = `Dias do próximo dividendo: ${latest.days_from_dividend}`;
+  document.getElementById('scoreLabel').textContent = `Score: ${latest.score}/100`;
   document.getElementById('rationale').textContent = latest.rationale;
-  document.getElementById('dist995').textContent = `$${num(99.5-latest.strc_close)}`;
-  document.getElementById('dist100').textContent = `$${num(100-latest.strc_close)}`;
-  document.getElementById('last7').textContent = history.slice(-7).map(x=>x.signal.split(' ')[0]).join(' · ');
-  document.getElementById('avg30').textContent = num(avg(history.slice(-30).map(x=>Number(x.score))),1);
+  document.getElementById('strcPrice').textContent = `$${fmtNum(latest.strc_close)}`;
+  document.getElementById('strcDiscount').textContent = `Desconto: $${fmtNum(latest.strc_discount_abs)} · ${fmtPct(latest.strc_discount_pct)}`;
+  document.getElementById('btcRet').textContent = fmtPct(latest.btc_ret_1d);
+  document.getElementById('btcVol').textContent = `Vol / média 20d: ${fmtNum(latest.btc_vol_ratio)}x`;
+  document.getElementById('dist995').textContent = fmtNum(latest.distance_99_5);
+  document.getElementById('dist100').textContent = fmtNum(latest.distance_100);
+  document.getElementById('scoreMa7').textContent = fmtNum(latest.score_ma7 || 0);
+  document.getElementById('last7').textContent = (latest.last7_signals || []).join(' · ');
+  document.getElementById('divWindow').textContent = niceWindow(latest.div_window);
+  document.getElementById('divDays').textContent = latest.days_from_dividend;
 
-  const labels = history.map(x=>x.market_date);
-  const scores = history.map(x=>Number(x.score));
-  const btcRet = history.map(x=>Number(x.btc_ret_1d)*100);
-  const disc = history.map(x=>Number(x.strc_discount_abs));
-  const counts = ['NO TRADE','OBSERVAR','COMPRA BOA','COMPRA EXCEPCIONAL'].map(s => history.filter(x=>x.signal===s).length);
+  const recent = history.slice(-15).reverse();
+  document.getElementById('historyTable').innerHTML = recent.map(r => `
+    <tr><td>${r.date}</td><td>${r.signal}</td><td>${r.score}</td><td>${fmtPct(r.btc_ret_1d)}</td><td>${fmtNum(r.btc_vol_ratio)}</td><td>$${fmtNum(r.strc_close)}</td><td>$${fmtNum(r.strc_discount_abs)}</td><td>${niceWindow(r.div_window)}</td></tr>
+  `).join('');
+
+  const labels = history.map(r => r.date);
+  const scores = history.map(r => r.score);
+  const scoreMa7 = history.map((_,i,arr) => {
+    const start = Math.max(0, i-6);
+    const slice = arr.slice(start, i+1).map(x => x.score);
+    return slice.reduce((a,b)=>a+b,0)/slice.length;
+  });
 
   new Chart(document.getElementById('scoreChart'), {
     type:'line',
-    data:{labels, datasets:[{label:'Score', data:scores, borderColor:'#52a8ff', backgroundColor:'rgba(82,168,255,0.18)', fill:true, tension:.3},{label:'Média 7d', data:scores.map((_,i)=>avg(scores.slice(Math.max(0,i-6),i+1))), borderColor:'#8a7dff', tension:.25}]},
-    options:{plugins:{legend:{labels:{color:'#c7d4ff'}}}, scales:{x:{ticks:{color:'#9fb0db'}}, y:{ticks:{color:'#9fb0db'}}}}
+    data:{labels,datasets:[
+      {label:'Score',data:scores,borderColor:'#63a0ff',backgroundColor:'rgba(99,160,255,.15)',tension:.25,fill:true},
+      {label:'Média 7d',data:scoreMa7,borderColor:'#39d98a',tension:.25}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#e9efff'}}},scales:{x:{ticks:{color:'#b8c8f9'}},y:{ticks:{color:'#b8c8f9'},grid:{color:'rgba(255,255,255,.08)'}}}}
   });
 
+  const counts = {'NO TRADE':0,'OBSERVAR':0,'COMPRA BOA':0,'COMPRA EXCEPCIONAL':0};
+  history.forEach(r => counts[r.signal] = (counts[r.signal] || 0) + 1);
   new Chart(document.getElementById('signalChart'), {
-    type:'doughnut',
-    data:{labels:['NO TRADE','OBSERVAR','COMPRA BOA','COMPRA EXCEPCIONAL'], datasets:[{data:counts, backgroundColor:['#6b7280','#f5a623','#2ed47a','#8a7dff']}]},
-    options:{plugins:{legend:{labels:{color:'#c7d4ff'}}}}
+    type:'bar',
+    data:{labels:Object.keys(counts),datasets:[{data:Object.values(counts),backgroundColor:['#8b95b2','#f5a524','#36d47a','#00e0ff']}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#b8c8f9'}},y:{ticks:{color:'#b8c8f9'},grid:{color:'rgba(255,255,255,.08)'}}}}
   });
 
   new Chart(document.getElementById('scatterChart'), {
     type:'scatter',
-    data:{datasets:[{label:'Histórico', data:history.map(x=>({x:Number(x.btc_ret_1d)*100, y:Number(x.strc_discount_abs)})), backgroundColor:'#52a8ff'}]},
-    options:{plugins:{legend:{labels:{color:'#c7d4ff'}}}, scales:{x:{title:{display:true,text:'BTC 1d (%)',color:'#c7d4ff'}, ticks:{color:'#9fb0db'}}, y:{title:{display:true,text:'Desconto STRC ($)',color:'#c7d4ff'}, ticks:{color:'#9fb0db'}}}}
+    data:{datasets:[{label:'Desconto vs BTC',data:history.map(r=>({x:r.btc_ret_1d*100,y:r.strc_discount_abs})),backgroundColor:'#63a0ff'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#e9efff'}}},scales:{x:{title:{display:true,text:'BTC 1d (%)',color:'#b8c8f9'},ticks:{color:'#b8c8f9'}},y:{title:{display:true,text:'Desconto STRC ($)',color:'#b8c8f9'},ticks:{color:'#b8c8f9'},grid:{color:'rgba(255,255,255,.08)'}}}}
   });
+}
 
-  new Chart(document.getElementById('dualChart'), {
-    data:{labels:labels.slice(-30), datasets:[{type:'bar', label:'Desconto STRC ($)', data:disc.slice(-30), backgroundColor:'rgba(46,212,122,0.4)'},{type:'line', label:'BTC 1d (%)', data:btcRet.slice(-30), borderColor:'#ff5a6f', yAxisID:'y1', tension:.3}]},
-    options:{plugins:{legend:{labels:{color:'#c7d4ff'}}}, scales:{x:{ticks:{color:'#9fb0db'}}, y:{ticks:{color:'#9fb0db'}}, y1:{position:'right', ticks:{color:'#9fb0db'}}}}
-  });
-
-  const body = document.getElementById('historyBody');
-  history.slice().reverse().slice(0,20).forEach(r => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${r.market_date}</td><td>${r.signal}</td><td>${r.score}</td><td>${pct(r.btc_ret_1d)}</td><td>${num(r.btc_vol_ratio)}x</td><td>$${num(r.strc_close)}</td><td>$${num(r.strc_discount_abs)}</td><td>${r.div_window}</td>`;
-    body.appendChild(tr);
-  });
-}).catch(err => {
-  document.body.innerHTML = `<div style="padding:40px;color:white">Erro ao carregar dados do dashboard: ${err}</div>`;
-});
+(async function init(){
+  try {
+    const latest = await loadJson(latestUrl);
+    const history = await loadJson(historyUrl);
+    render(latest, history);
+  } catch(err){
+    const box = document.getElementById('errorBox');
+    box.style.display = 'block';
+    box.textContent = 'Erro ao carregar dados do dashboard: ' + err.message;
+    console.error(err);
+  }
+})();
 </script>
 </body>
 </html>

@@ -1,0 +1,4 @@
+date,btc_ret_1d,btc_vol_ratio,strc_close,strc_discount_abs,strc_discount_pct,days_from_dividend,div_window,signal,score,rationale,distance_99_5,distance_100,updated_at_utc
+2026-03-14,-0.018,1.11,98.65,1.35,0.0137,-2,antes_5a1,NO TRADE,10,Janela pré-dividendo,-0.85,-1.35,2026-03-18 00:00:00 UTC
+2026-03-17,-0.0125,1.1,99.875,0.125,0.00125,1,depois_1a3,NO TRADE,25,Setup incompleto,0.375,-0.125,2026-03-18 00:00:00 UTC
+2026-03-18,-0.037,1.0153,99.57,0.43,0.004319,2,depois_1a3,OBSERVAR,58,BTC em queda | BTC em stress | Volume acima da média,0.07,-0.43,2026-03-18 00:00:00 UTC

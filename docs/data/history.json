@@ -1,16 +1,50 @@
 [
   {
-    "run_time_utc": "2026-03-18 00:00:00 UTC",
-    "market_date": "2026-03-18",
-    "signal": "OBSERVAR",
-    "score": 58,
-    "btc_close": 71184.1641,
-    "btc_ret_1d": -0.037043,
+    "date": "2026-03-14",
+    "btc_ret_1d": -0.018,
+    "btc_vol_ratio": 1.11,
+    "strc_close": 98.65,
+    "strc_discount_abs": 1.35,
+    "strc_discount_pct": 0.0137,
+    "days_from_dividend": -2,
+    "div_window": "antes_5a1",
+    "signal": "NO TRADE",
+    "score": 10,
+    "rationale": "Janela pré-dividendo",
+    "distance_99_5": -0.85,
+    "distance_100": -1.35,
+    "updated_at_utc": "2026-03-18 00:00:00 UTC"
+  },
+  {
+    "date": "2026-03-17",
+    "btc_ret_1d": -0.0125,
+    "btc_vol_ratio": 1.1,
+    "strc_close": 99.875,
+    "strc_discount_abs": 0.125,
+    "strc_discount_pct": 0.00125,
+    "days_from_dividend": 1,
+    "div_window": "depois_1a3",
+    "signal": "NO TRADE",
+    "score": 25,
+    "rationale": "Setup incompleto",
+    "distance_99_5": 0.375,
+    "distance_100": -0.125,
+    "updated_at_utc": "2026-03-18 00:00:00 UTC"
+  },
+  {
+    "date": "2026-03-18",
+    "btc_ret_1d": -0.037,
     "btc_vol_ratio": 1.0153,
     "strc_close": 99.57,
     "strc_discount_abs": 0.43,
     "strc_discount_pct": 0.004319,
+    "days_from_dividend": 2,
     "div_window": "depois_1a3",
-    "days_from_dividend": 2
+    "signal": "OBSERVAR",
+    "score": 58,
+    "rationale": "BTC em queda | BTC em stress | Volume acima da média",
+    "distance_99_5": 0.07,
+    "distance_100": -0.43,
+    "updated_at_utc": "2026-03-18 00:00:00 UTC"
   }
 ]
